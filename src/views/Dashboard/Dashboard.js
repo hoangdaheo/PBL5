@@ -57,7 +57,7 @@ export default function Dashboard() {
   const [dataGraph,setDataGraph] = useState();
   const [dataInput,setDataInput] = useState(1);
   function changeDataInput(a){
-    setDataInput(a)
+    setDataInput(a);
     console.log(dataInput);
   }
   function changeGraphResult () {
