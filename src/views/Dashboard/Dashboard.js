@@ -48,57 +48,52 @@ import { ModuleResolutionKind } from "typescript";
 const useStyles = makeStyles(styles);
 
 export default function Dashboard() {
-  
   const classes = useStyles();
   const [result, setResult] = useState();
   const [ResultWarning, setResultWarning] = useState();
-  const [student,setStudent] = useState();
+  const [student, setStudent] = useState();
   const [recentResult, setRecentResult] = useState();
-  const [dataGraph,setDataGraph] = useState();
-  const [dataInput,setDataInput] = useState(1);
-  function changeDataInput(a){
+  const [dataGraph, setDataGraph] = useState();
+  const [dataInput, setDataInput] = useState(1);
+  function changeDataInput(a) {
     setDataInput(a);
     console.log(dataInput);
   }
-  function changeGraphResult () {
+  function changeGraphResult() {
     ResultService.getTempAndTime(dataInput).then((res) => {
       let arr = [];
-      let arr1 = []; 
+      let arr1 = [];
       console.log(dataInput);
-      for (let i =0;i <res.data.length ;i++){
+      for (let i = 0; i < res.data.length; i++) {
         arr.push(res.data[i].temperature);
         arr1.push(res.data[i].TIMEONLY);
       }
-      
+
       setDataGraph({
         data: {
           labels: arr1,
-          series: [arr]
-        }
+          series: [arr],
+        },
       });
-      
     });
-    
   }
   useEffect(() => {
     ResultService.getTempAndTime(dataInput).then((res) => {
       let arr = [];
       let arr1 = [];
-      for (let i =0;i <res.data.length ;i++){
+      for (let i = 0; i < res.data.length; i++) {
         arr.push(res.data[i].temperature);
         arr1.push(res.data[i].TIMEONLY);
       }
-      
+
       setDataGraph({
         data: {
           labels: arr1.map(String),
-          series: [arr]
-        }
+          series: [arr],
+        },
       });
-      
     });
     ResultService.getResult().then((res) => {
-
       setResult(res.data);
     });
     ResultService.getResultWarning().then((res) => {
@@ -109,10 +104,11 @@ export default function Dashboard() {
       //console.log(res.data);
       setStudent(res.data);
     });
-    ResultService.getRecentResult().then((res)=>{
-      //console.log(res.data);
-      setRecentResult(res.data);
-    });
+    // ResultService.getRecentResult().then((res) => {
+    //   console.log(res.data);
+    //   // console.log("??????");
+    //   setRecentResult(res.data);
+    // });
   }, []);
   return (
     <div>
@@ -145,7 +141,7 @@ export default function Dashboard() {
               </CardIcon>
               <p className={classes.cardCategory}>Student</p>
               <h3 className={classes.cardTitle}>
-                {student? student.length : null} <small>students</small>
+                {student ? student.length : null} <small>students</small>
               </h3>
             </CardHeader>
             <CardFooter stats>
@@ -182,26 +178,31 @@ export default function Dashboard() {
             </CardFooter>
           </Card>
         </GridItem>
-
       </GridContainer>
       <GridContainer>
+        <GridItem xs={19} sm={19} md={9}>
+          <div>
+            <Input
+              type="text"
+              onChange={(event) => changeDataInput(event.target.value)}
+            />
+            <Button
+              onClick={changeGraphResult}
+              color="black"
+              aria-label="edit"
+              justIcon
+            >
+              <Search />
+            </Button>
+          </div>
+        </GridItem>
 
-
-      <GridItem xs={19} sm={19} md={9}>
-      <div>
-        <Input type="text" onChange = {event => changeDataInput(event.target.value)} />
-        <Button onClick={changeGraphResult} color="black" aria-label="edit" justIcon >
-          <Search />
-        </Button>
-      </div>
-      </GridItem>
-      
         <GridItem xs={19} sm={19} md={9}>
           <Card chart>
             <CardHeader color="danger">
               <ChartistGraph
                 className="ct-chart"
-                data={dataGraph?dataGraph.data: completedTasksChart.data}
+                data={dataGraph ? dataGraph.data : completedTasksChart.data}
                 type="Line"
                 options={completedTasksChart.options}
                 listener={completedTasksChart.animation}
@@ -209,7 +210,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardBody>
               <h4 className={classes.cardTitle}>Temperature in day</h4>
-              {/* <p className={classes.cardCategory}>Last Campaign Performance</p> */}
+              <p className={classes.cardCategory}>Last Campaign Performance</p>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
@@ -227,13 +228,24 @@ export default function Dashboard() {
             <CardBody>
               <Table
                 tableHeaderColor="warning"
-                tableHead={["ID", "Name", "Address", "Age","Temperature","Time"]}
-                tableData={recentResult? recentResult:[
-                  ["1", "Mai Thế Viễn", "18TCLC_DT2", "40 °C"],
-                  ["2", "Huỳnh Trần 4 Chữ", "18TCLC_DT3", "42 °C"],
-                  ["3", "Nguyễn Phước Quốc", "18TCLC_DT22", "43 °C"],
-                  ["4", "Nguyễn Nguyên Hoàng", "18TCLC_DT2", "41 °C"],
+                tableHead={[
+                  "ID",
+                  "Name",
+                  "Address",
+                  "Age",
+                  "Temperature",
+                  "Time",
                 ]}
+                tableData={
+                  recentResult
+                    ? recentResult
+                    : [
+                        ["1", "Mai Thế Viễn", "18TCLC_DT2", "40 °C"],
+                        ["2", "Huỳnh Trần 4 Chữ", "18TCLC_DT3", "42 °C"],
+                        ["3", "Nguyễn Phước Quốc", "18TCLC_DT22", "43 °C"],
+                        ["4", "Nguyễn Nguyên Hoàng", "18TCLC_DT2", "41 °C"],
+                      ]
+                }
               />
             </CardBody>
           </Card>
@@ -243,4 +255,3 @@ export default function Dashboard() {
     </div>
   );
 }
-
