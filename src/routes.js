@@ -35,6 +35,7 @@ import NotificationsPage from "views/Notifications/Notifications.js";
 import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.js";
+import SeeMoreStudentPage from "views/SeeMoreStudent/SeeMoreStudent";
 
 const dashboardRoutes = [
   {
@@ -43,6 +44,14 @@ const dashboardRoutes = [
     rtlName: "لوحة القيادة",
     icon: Dashboard,
     component: DashboardPage,
+    layout: "/admin",
+  },
+  {
+    path: "/seeMoreStudent",
+    name: "Student ",
+    rtlName: "لوحة القيادة",
+    icon: LibraryBooks,
+    component: SeeMoreStudentPage,
     layout: "/admin",
   },
   {
