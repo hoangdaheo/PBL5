@@ -17,9 +17,12 @@
 */
 // @material-ui/icons
 import Dashboard from "@material-ui/icons/Dashboard";
+import LineStyleIcon from '@material-ui/icons/LineStyle';
 import Person from "@material-ui/icons/Person";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
+import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
 import BubbleChart from "@material-ui/icons/BubbleChart";
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
 import LocationOn from "@material-ui/icons/LocationOn";
 import Notifications from "@material-ui/icons/Notifications";
 import Unarchive from "@material-ui/icons/Unarchive";
@@ -36,7 +39,8 @@ import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.js";
 import SeeMoreStudentPage from "views/SeeMoreStudent/SeeMoreStudent";
-
+import SeeMoreResultPage from "views/SeeMoreResult/SeeMoreResult";
+import SeeMoreSRPage from "views/SeeMoreSR/SeeMoreSR";
 const dashboardRoutes = [
   {
     path: "/dashboard",
@@ -50,8 +54,24 @@ const dashboardRoutes = [
     path: "/seeMoreStudent",
     name: "Student ",
     rtlName: "لوحة القيادة",
-    icon: LibraryBooks,
+    icon: EmojiPeopleIcon,
     component: SeeMoreStudentPage,
+    layout: "/admin",
+  },
+  {
+    path: "/seeMoreResult",
+    name: "Result ",
+    rtlName: "لوحة القيادة",
+    icon: LineStyleIcon,
+    component: SeeMoreResultPage,
+    layout: "/admin",
+  },
+  {
+    path: "/seeMoreSR",
+    name: "Hyperthemia",
+    rtlName: "ملف تعريفي للمستخدم",
+    icon: SentimentVeryDissatisfiedIcon,
+    component: SeeMoreSRPage,
     layout: "/admin",
   },
   {

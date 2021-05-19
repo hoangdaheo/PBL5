@@ -38,29 +38,13 @@ export default function CustomTable(props) {
           {tableData.map((prop, key) => {
             return (
               <TableRow hover key={key} className={classes.tableBodyRow}>
-                    <TableCell className={classes.tableCell} key={"ID"}>
-                    {prop.studentID}
+                {Object.values(prop).map((v,i) => {
+                  return (
+                    <TableCell className={classes.tableCell} key={i}>
+                      {v}
                     </TableCell>
-
-                    <TableCell className={classes.tableCell} key={"Name"}>
-                    {prop.name}
-                    </TableCell>
-
-                    <TableCell className={classes.tableCell} key={"Adress"}>
-                    {prop.address}
-                    </TableCell>
-
-                    <TableCell className={classes.tableCell} key={"Age"}>
-                    {prop.age}
-                    </TableCell>
-
-                    <TableCell className={classes.tableCell} key={"Temperature"}>
-                    {prop.temperature}
-                    </TableCell>
-
-                    <TableCell className={classes.tableCell} key={"Time"}>
-                    {prop.TIMEONLY}
-                    </TableCell>
+                  );
+                })}
               </TableRow>
             );
           })}

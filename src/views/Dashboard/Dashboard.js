@@ -34,7 +34,7 @@ import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import Search from "@material-ui/icons/Search";
 import { bugs, website, server } from "variables/general.js";
-
+import "./Dashboard.css";
 import {
   dailySalesChart,
   emailsSubscriptionChart,
@@ -55,30 +55,19 @@ export default function Dashboard() {
   const [recentResult, setRecentResult] = useState();
   const [dataGraph, setDataGraph] = useState();
   const [dataInput, setDataInput] = useState(1);
+  const [dateTime,setDateTime] = useState();
+  
   function changeDataInput(a) {
     setDataInput(a);
-    console.log(dataInput);
   }
-  function changeGraphResult() {
-    ResultService.getTempAndTime(dataInput).then((res) => {
-      let arr = [];
-      let arr1 = [];
-      console.log(dataInput);
-      for (let i = 0; i < res.data.length; i++) {
-        arr.push(res.data[i].temperature);
-        arr1.push(res.data[i].TIMEONLY);
-      }
-
-      setDataGraph({
-        data: {
-          labels: arr1,
-          series: [arr],
-        },
-      });
-    });
+  function changeDateInput(a) {
+    setDateTime(a);
   }
-  useEffect(() => {
-    ResultService.getTempAndTime(dataInput).then((res) => {
+  function changeDataGraph(){
+    if(!dateTime){
+      setDateTime('2021-05-13');
+    }
+    ResultService.getTempAndTime(dataInput,dateTime).then((res) => {
       let arr = [];
       let arr1 = [];
       for (let i = 0; i < res.data.length; i++) {
@@ -93,6 +82,11 @@ export default function Dashboard() {
         },
       });
     });
+  }
+
+
+  useEffect(() => {
+    changeDataGraph();
     ResultService.getResult().then((res) => {
       setResult(res.data);
     });
@@ -104,12 +98,15 @@ export default function Dashboard() {
       //console.log(res.data);
       setStudent(res.data);
     });
-    // ResultService.getRecentResult().then((res) => {
-    //   console.log(res.data);
-    //   // console.log("??????");
-    //   setRecentResult(res.data);
-    // });
+    ResultService.getRecentResult().then((res) => {
+      // console.log(res.data);
+      setRecentResult(res.data);
+    });
   }, []);
+  useEffect(()=>{
+    console.log(dataInput);
+    changeDataGraph();
+  }, [dataInput,dateTime])
   return (
     <div>
       <GridContainer>
@@ -117,7 +114,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="warning" stats icon>
               <CardIcon color="warning">
-                <Icon>content_copy</Icon>
+                <Icon>dynamic_feed</Icon>
               </CardIcon>
               <p className={classes.cardCategory}>Result</p>
               <h3 className={classes.cardTitle}>
@@ -126,7 +123,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                <a href="/admin/seeMoreResult" className={classes.block} >
                   See more
                 </a>
               </div>
@@ -137,7 +134,7 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="success" stats icon>
               <CardIcon color="success">
-                <Store />
+                <Icon>emoji_people</Icon>
               </CardIcon>
               <p className={classes.cardCategory}>Student</p>
               <h3 className={classes.cardTitle}>
@@ -146,7 +143,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
-                <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                <a href="/admin/seeMoreStudent" className={classes.block}>
                   See more
                 </a>
               </div>
@@ -158,9 +155,9 @@ export default function Dashboard() {
           <Card>
             <CardHeader color="danger" stats icon>
               <CardIcon color="danger">
-                <Icon>info_outline</Icon>
+                <Icon>report</Icon>
               </CardIcon>
-              <p className={classes.cardCategory}>Special results</p>
+              <p className={classes.cardCategory}>Hyperthemia</p>
               <h3 className={classes.cardTitle}>
                 {ResultWarning ? ResultWarning.length : null}{" "}
                 <small>results</small>
@@ -171,7 +168,7 @@ export default function Dashboard() {
                 <Danger>
                   <Warning />
                 </Danger>
-                <a href="#pablo" onClick={(e) => e.preventDefault()}>
+                <a href="/admin/seeMoreSR" className={classes.block}>
                   See more
                 </a>
               </div>
@@ -182,19 +179,15 @@ export default function Dashboard() {
       <GridContainer>
         <GridItem xs={19} sm={19} md={9}>
           <div>
+          <label className={classes.cardTitleBlack}>Student ID&nbsp;&nbsp;&nbsp;</label>
             <Input
-              type="text"
-              onChange={(event) => changeDataInput(event.target.value)}
+              style={styles.input} textAlign={'center'}
+              type="number" pattern="[0-9]*"
+              onChange={(event) => {changeDataInput(event.target.value);}}
             />
-            <Button
-              onClick={changeGraphResult}
-              color="black"
-              aria-label="edit"
-              justIcon
-            >
-              <Search />
-            </Button>
+            <Input type="date" onChange={(event) => {changeDateInput(event.target.value);}}/>
           </div>
+          
         </GridItem>
 
         <GridItem xs={19} sm={19} md={9}>
@@ -210,20 +203,27 @@ export default function Dashboard() {
             </CardHeader>
             <CardBody>
               <h4 className={classes.cardTitle}>Temperature in day</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
+             
+              {
+                student?
+                  Object.values(student).map((v,i)=>{
+                    return {key:i,id:v.id, name:v.studentID+" - "+v.NAME+" - "+v.address+" - "+v.age};
+                  }).map((x)=>{
+                    if (x.id == dataInput)
+                    return  <p className={classes.cardTitleBlack} key = {x.key}> {x.name}  </p>
+                  })
+                  :"Unknown"
+              }
+           
             </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime />
-              </div>
-            </CardFooter>
+
           </Card>
         </GridItem>
         <GridItem xs={12} sm={12} md={9}>
           <Card>
             <CardHeader color="warning">
-              <h4 className={classes.cardTitleWhite}>Infomation</h4>
-              <p className={classes.cardCategoryWhite}>Recent Result</p>
+              <h4 className={classes.cardTitleWhite}>Recent Result</h4>
+              
             </CardHeader>
             <CardBody>
               <Table

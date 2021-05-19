@@ -12,8 +12,8 @@ const getStudent = async ()=>{
 const getRecentResult = async ()=>{
   return await HandleAPI.APIGet("RecentResult");
 }
-const getTempAndTime = async (id)=>{
-  return await HandleAPI.APIGet('TempAndTime/'+id);
+const getTempAndTime = async (id,time)=>{
+  return await HandleAPI.APIGet('TempAndTime/'+id+'/'+time);
 }
 const ResultService = { getResult, getResultWarning, getStudent ,getRecentResult, getTempAndTime};
 

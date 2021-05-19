@@ -23,12 +23,12 @@ const useStyles = makeStyles(styles);
 
 const SeeMore = () => {
   const classes = useStyles();
-  const [student, setStudent] = useState();
+  const [sr, setSr] = useState();
   useEffect(() => {
-    ResultService.getStudent().then((res) => {
-      console.log("Seemore");
+    ResultService.getResultWarning().then((res) => {
+     
       console.log(res.data);
-      setStudent(res.data);
+      setSr(res.data);
     });
 
   }, []);
@@ -36,8 +36,8 @@ const SeeMore = () => {
     <div>
       <GridItem xs={12} sm={12} md={19}>
         <Card>
-          <CardHeader color="success" style={{ marginBottom: -30 }}>
-            <h4 className={classes.cardTitleWhite}>Student List</h4>
+          <CardHeader color="danger" style={{ marginBottom: -30 }}>
+            <h4 className={classes.cardTitleWhite}>Hyperthemia</h4>
           </CardHeader>
           <CardBody>
             <Table
@@ -45,14 +45,12 @@ const SeeMore = () => {
               tableHead={[
                 "ID",
                 "Name",
-                "Age",
+                "Temperature",
                 "Sex",
-                "StudentID",
-                "Address",
-                "Falcuty",
-                "Role"
+                "Time",
+                
               ]}
-              tableData={student?student:[[]]}
+              tableData={sr?sr:[[]]}
             />
           </CardBody>
         </Card>
