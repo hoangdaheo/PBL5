@@ -15,6 +15,24 @@ const getRecentResult = async ()=>{
 const getTempAndTime = async (id,time)=>{
   return await HandleAPI.APIGet('TempAndTime/'+id+'/'+time);
 }
-const ResultService = { getResult, getResultWarning, getStudent ,getRecentResult, getTempAndTime};
+const getStudentById = async (id)=>{
+  return await HandleAPI.APIGet('GetUserID/'+id);
+}
+const updateStudent = async (params) =>{
+  return await HandleAPI.APIPut('ChangInformationStudent',params);
+}
+const getResultCountByDay = async () =>{
+  return await HandleAPI.APIGet("GetResultCountByDay");
+}
+const ResultService = {
+  updateStudent, 
+  getResult, 
+  getResultWarning, 
+  getStudent, 
+  getRecentResult, 
+  getTempAndTime, 
+  getStudentById,
+  getResultCountByDay
+};
 
 export default ResultService;

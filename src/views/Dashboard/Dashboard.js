@@ -15,12 +15,15 @@ import Update from "@material-ui/icons/Update";
 import ArrowUpward from "@material-ui/icons/ArrowUpward";
 import AccessTime from "@material-ui/icons/AccessTime";
 import Accessibility from "@material-ui/icons/Accessibility";
-import BugReport from "@material-ui/icons/BugReport";
+import BuildIcon from '@material-ui/icons/Build';
 import Code from "@material-ui/icons/Code";
 import Cloud from "@material-ui/icons/Cloud";
 // core components
+import InputLabel from '@material-ui/core/InputLabel';
 import GridItem from "components/Grid/GridItem.js";
+import Select from '@material-ui/core/Select';
 import GridContainer from "components/Grid/GridContainer.js";
+import MenuItem from '@material-ui/core/MenuItem';
 import Table from "components/Table/Table.js";
 import Tasks from "components/Tasks/Tasks.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
@@ -56,6 +59,7 @@ export default function Dashboard() {
   const [dataGraph, setDataGraph] = useState();
   const [dataInput, setDataInput] = useState(1);
   const [dateTime,setDateTime] = useState();
+  const [resultCount, setResultCount] = useState();
   
   function changeDataInput(a) {
     setDataInput(a);
@@ -65,20 +69,24 @@ export default function Dashboard() {
   }
   function changeDataGraph(){
     if(!dateTime){
-      setDateTime('2021-05-13');
+      let date = new Date();
+      let today = date.getFullYear()+'-'+('0'+(date.getMonth()+1))+'-'+date.getDate();
+      setDateTime(today);
     }
     ResultService.getTempAndTime(dataInput,dateTime).then((res) => {
       let arr = [];
       let arr1 = [];
+      let defaultArr = [];
       for (let i = 0; i < res.data.length; i++) {
         arr.push(res.data[i].temperature);
         arr1.push(res.data[i].TIMEONLY);
+        defaultArr.push(37);
       }
 
       setDataGraph({
         data: {
           labels: arr1.map(String),
-          series: [arr],
+          series: [arr,defaultArr],
         },
       });
     });
@@ -102,11 +110,37 @@ export default function Dashboard() {
       // console.log(res.data);
       setRecentResult(res.data);
     });
+    ResultService.getResultCountByDay().then((res) => {
+      let arr = [];
+      let arr1 = [];
+      for (let i = 0; i < res.data.length; i++) {
+        arr.push(res.data[i].result);
+        arr1.push(res.data[i].date);
+      }
+      setResultCount({
+        data: {
+          labels: arr1.map(String),
+          series: [arr],
+        },
+        options: {
+          axisX: {
+            showGrid: false
+          },
+          low: 0,
+          high: Math.max(...arr)+5,
+          chartPadding: {
+            top: 0,
+            right: 5,
+            bottom: 0,
+            left: 0
+          }
+        }
+      });
+    });
   }, []);
   useEffect(()=>{
-    console.log(dataInput);
     changeDataGraph();
-  }, [dataInput,dateTime])
+  }, [dataInput,dateTime,resultCount]);
   return (
     <div>
       <GridContainer>
@@ -177,22 +211,68 @@ export default function Dashboard() {
         </GridItem>
       </GridContainer>
       <GridContainer>
-        <GridItem xs={19} sm={19} md={9}>
-          <div>
-          <label className={classes.cardTitleBlack}>Student ID&nbsp;&nbsp;&nbsp;</label>
-            <Input
-              style={styles.input} textAlign={'center'}
-              type="number" pattern="[0-9]*"
-              onChange={(event) => {changeDataInput(event.target.value);}}
-            />
-            <Input type="date" onChange={(event) => {changeDateInput(event.target.value);}}/>
-          </div>
-          
-        </GridItem>
+        <GridItem xs={12} sm={12} md={4}>
+        <Card>
+            <CardBody>
 
-        <GridItem xs={19} sm={19} md={9}>
+          <InputLabel  style={{color: "green"}} id="demo-simple-select-label">Student</InputLabel>
+          <Select
+          style={{width: "100%"}}
+            labelId="demo-simple-select-label"
+            id="demo-simple-select"
+            onChange={(event) =>{changeDataInput(event.target.value);}}
+          >
+              {student?Object.values(student).map((v,i)=>{
+                return <MenuItem value={v.id}>{v.id+" - "+v.NAME}</MenuItem>
+              }):<MenuItem value={102180163}>Hoang</MenuItem>}
+          </Select>
+            </CardBody>
+            <CardBody>
+           <InputLabel style={{color: "green"}} id="demo-simple-select-label">ID</InputLabel>
+              <Input
+                    style={{width: "100%"}}
+                    type="number" 
+                    onChange={(event) => {changeDataInput(event.target.value);}}
+                  />
+                
+           </CardBody>
+            <CardBody>
+           
+           <InputLabel style={{color: "green"}} id="demo-simple-select-label">Date</InputLabel>
+           <Input style={{width: "100%"}} type="date" onChange={(event) => {changeDateInput(event.target.value);}}/>
+           
+           </CardBody>
+        </Card>
+  
+        </GridItem>
+        
+        <GridItem xs={12} sm={12} md={7}>
           <Card chart>
-            <CardHeader color="danger">
+            <CardHeader color="warning">
+              <ChartistGraph
+                className="ct-chart"
+                data={resultCount?resultCount.data:[[]]}
+                type="Bar"
+                options={resultCount?resultCount.options:"null"}
+                responsiveOptions={emailsSubscriptionChart.responsiveOptions}
+                listener={emailsSubscriptionChart.animation}
+              />
+            </CardHeader>
+            <CardBody>
+              <h4 className={classes.cardTitle}>Result</h4>
+              
+            </CardBody>
+            <CardFooter chart>
+              <div className={classes.stats}>
+                
+              </div>
+            </CardFooter>
+          </Card>
+        </GridItem>
+        <GridItem xs={12} sm={12} md={11}>
+          <Card chart>
+            <CardHeader color="success">
+            
               <ChartistGraph
                 className="ct-chart"
                 data={dataGraph ? dataGraph.data : completedTasksChart.data}
@@ -200,6 +280,13 @@ export default function Dashboard() {
                 options={completedTasksChart.options}
                 listener={completedTasksChart.animation}
               />
+              <div style={{border: '1px solid white' , borderRadius:'15px', width:'21%'}}>
+              <p  style={{color: "red",paddingLeft:'10%',paddingTop:'5%'}} >____ 37•C</p>
+              <p  style={{color: "white",paddingLeft:'10%'}} >____ User temperature</p>
+              </div>
+
+            
+
             </CardHeader>
             <CardBody>
               <h4 className={classes.cardTitle}>Temperature in day</h4>
@@ -207,7 +294,7 @@ export default function Dashboard() {
               {
                 student?
                   Object.values(student).map((v,i)=>{
-                    return {key:i,id:v.id, name:v.studentID+" - "+v.NAME+" - "+v.address+" - "+v.age};
+                    return {key:i,id:v.id, name:v.NAME+" - "+v.address+" - "+v.age};
                   }).map((x)=>{
                     if (x.id == dataInput)
                     return  <p className={classes.cardTitleBlack} key = {x.key}> {x.name}  </p>
@@ -216,13 +303,21 @@ export default function Dashboard() {
               }
            
             </CardBody>
-
+            <CardFooter chart>
+              <div  style={{color: "red"}} className={classes.stats}>
+                <AccessTime style={{color: "green"}} />{dateTime}
+              </div>
+            </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={12} md={9}>
+
+
+
+
+        <GridItem xs={12} sm={12} md={11}>
           <Card>
-            <CardHeader color="warning">
-              <h4 className={classes.cardTitleWhite}>Recent Result</h4>
+            <CardHeader color="danger">
+              <h4 className={classes.cardTitleWhite}>Latest Result</h4>
               
             </CardHeader>
             <CardBody>

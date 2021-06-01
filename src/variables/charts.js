@@ -92,7 +92,7 @@ const emailsSubscriptionChart = {
       showGrid: false
     },
     low: 0,
-    high: 1000,
+    high: 50,
     chartPadding: {
       top: 0,
       right: 5,
@@ -143,7 +143,7 @@ const completedTasksChart = {
     lineSmooth: Chartist.Interpolation.cardinal({
       tension: 0
     }),
-    low: 30,
+    low: 35,
     high: 41, // creative tim: we recommend you to set the high sa the biggest value + something for a better look
     chartPadding: {
       top: 0,

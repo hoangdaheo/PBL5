@@ -14,6 +14,8 @@ import CardBody from "components/Card/CardBody.js";
 import CardFooter from "components/Card/CardFooter.js";
 import ResultService from "../../config/API/Result/ResultService";
 import avatar from "assets/img/faces/marc.jpg";
+import { Input } from "@material-ui/core";
+import Swal from "sweetalert2";
 
 const styles = {
   cardCategoryWhite: {
@@ -39,12 +41,33 @@ const useStyles = makeStyles(styles);
 export default function UserProfile() {
   const classes = useStyles();
   const [student, setStudent] = useState();
+  const id = (window.location.href).split('/')[5];
+  const [name, setName] = useState(student?student[0].NAME: "");
+  const [address, setAddress] = useState(student?student[0].address:"");
+  const [age, setAge] = useState(student?student[0].age:"");
+  const [studentID, setStudentID] = useState(student?student[0].studentID:"");
   useEffect(() => {
-    ResultService.getStudent().then((res) => {
-      //console.log(res.data);
-      setStudent(res.data);
+    ResultService.getStudentById(id?id:102180163).then((res) => {
+      const temp = res.data;
+      setStudent(temp);
+      setName(temp[0].NAME);
+      setAddress(temp[0].address);
+      setAge(temp[0].age);
+      
     });
   }, []);
+  function callParams(){
+    const params ={
+      id: student[0].id ,
+      name: name,
+      age :age,
+      sex : student[0].sex,
+      
+      idFaculty: student[0].idFaculty,
+      address: address
+    }
+    return params;
+  }
   return (
     <div>
       <GridContainer>
@@ -56,42 +79,36 @@ export default function UserProfile() {
             </CardHeader>
             <CardBody>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={5}>
+                <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
                     labelText="Falcuty"
                     id="company-disabled"
                     formControlProps={{
                       fullWidth: true
                     }}
+                    value = {student?student[0].idFaculty:""}
                     inputProps={{
                       disabled: true
                     }}
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={3}>
-                  <CustomInput
-                    labelText="Username"
-                    id="username"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
-                  <CustomInput
-                    labelText="Address"
-                    id="address"
-                    formControlProps={{
-                      fullWidth: true
-                    }}
-                  />
-                </GridItem>
-              </GridContainer>
-              <GridContainer>
-                <GridItem xs={12} sm={12} md={6}>
+                <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
                     labelText="Name"
                     id="name"
+                    value={name} 
+                    onChange={(event) => setName(event.target.value)}
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                  />
+                </GridItem>
+                <GridItem xs={12} sm={12} md={12}>
+                  <CustomInput
+                    labelText="Address"
+                    id="address"
+                    value={address} 
+                    onChange={(event) => setAddress(event.target.value)}
                     formControlProps={{
                       fullWidth: true
                     }}
@@ -99,19 +116,30 @@ export default function UserProfile() {
                 </GridItem>
               </GridContainer>
               <GridContainer>
-                <GridItem xs={12} sm={12} md={4}>
+
+              </GridContainer>
+              <GridContainer>
+                <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
                     labelText="Age"
                     id="age"
+                    type = "number"
+                    value={age} 
+                    onChange={(event) => setAge(event.target.value)}
                     formControlProps={{
                       fullWidth: true
                     }}
                   />
                 </GridItem>
-                <GridItem xs={12} sm={12} md={4}>
+                <GridItem xs={12} sm={12} md={12}>
                   <CustomInput
                     labelText="ID"
                     id="student-id"
+                    value={id?id:102180163} 
+                    onChange={(event) => setStudentID(event.target.value)}
+                    inputProps={{
+                      disabled: true
+                    }}
                     formControlProps={{
                       fullWidth: true
                     }}
@@ -121,28 +149,45 @@ export default function UserProfile() {
  
             </CardBody>
             <CardFooter>
-              <Button color="primary">Update Profile</Button>
+              <Button color="primary" onClick={()=>{
+                ResultService.updateStudent(callParams()).then((res)=>{
+                        if (res.dataString === "Success") {
+                          Swal.fire({
+            position: "center",
+            icon: "success",
+            title: "Update successful",
+            showConfirmButton: false,
+            timer: 2500,
+          });
+                        }else{
+                          Swal.fire({
+            position: "center",
+            icon: "error",
+            title: "Update failed",
+            showConfirmButton: false,
+            timer: 2500,
+          });
+                        }
+
+                  
+                  
+                  console.log(res);})
+              }}>Update Profile</Button>
             </CardFooter>
           </Card>
         </GridItem>
-        <GridItem xs={12} sm={12} md={4}>
+        <GridItem xs={18} sm={18} md={4}>
           <Card profile>
             <CardAvatar profile>
               <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={avatar} alt="..." />
+                <img src={student?student[0].image:""} alt="..." />
               </a>
             </CardAvatar>
             <CardBody profile>
-              <h6 className={classes.cardCategory}>CEO / CO-FOUNDER</h6>
-              <h4 className={classes.cardTitle}>Alec Thompson</h4>
+              <h3 className={classes.cardTitle}>{name}</h3>
               <p className={classes.description}>
-                Don{"'"}t be scared of the truth because we need to restart the
-                human foundation in truth And I love you like Kanye loves Kanye
-                I love Rick Owens’ bed design but the back is...
+              
               </p>
-              <Button color="primary" round>
-                Follow
-              </Button>
             </CardBody>
           </Card>
         </GridItem>

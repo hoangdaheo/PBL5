@@ -3,7 +3,7 @@ import "./SeeMoreStudent.scss";
 
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
-import Table from "components/Table/Table.js";
+import Table from "components/Table/Table1.js";
 import Tasks from "components/Tasks/Tasks.js";
 import CustomTabs from "components/CustomTabs/CustomTabs.js";
 import Danger from "components/Typography/Danger.js";
@@ -27,8 +27,11 @@ const SeeMore = () => {
   useEffect(() => {
     ResultService.getStudent().then((res) => {
       console.log("Seemore");
-      console.log(res.data);
-      setStudent(res.data);
+      const temp = res.data;
+      for (let i = 0; i <temp.length; i++) {
+        delete temp[i].image;
+      }
+      setStudent(temp);
     });
 
   }, []);
@@ -47,10 +50,11 @@ const SeeMore = () => {
                 "Name",
                 "Age",
                 "Sex",
-                "StudentID",
                 "Address",
                 "Falcuty",
-                "Role"
+                "Role",
+                
+                
               ]}
               tableData={student?student:[[]]}
             />
