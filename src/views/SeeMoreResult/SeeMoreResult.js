@@ -1,6 +1,6 @@
 import React, { useState,useEffect } from "react";
 import "./SeeMoreStudent.scss";
-
+import InputLabel from '@material-ui/core/InputLabel';
 import GridItem from "components/Grid/GridItem.js";
 import GridContainer from "components/Grid/GridContainer.js";
 import Table from "components/Table/Table.js";
@@ -42,15 +42,24 @@ const SeeMore = () => {
   }, [dataInput]);
   return (
     <div>
+        <GridItem xs={12} sm={12} md={4}>
+        <Card>
+
+            <CardBody>
+           <InputLabel style={{color: "green"}} id="demo-simple-select-label">Search</InputLabel>
+              <Input
+                    style={{width: "100%"}}
+                    type="number" 
+                    placeholder="Enter student ID"
+                    onChange={(event) => {setDataInput(event.target.value);}}
+                  />
+                
+           </CardBody>
+        </Card>
+  
+        </GridItem>
       <GridItem xs={12} sm={12} md={19}>
-      <div>
-          <label className={classes.cardTitleBlack}>Student ID&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <Input
-              style={styles.input}
-              type="number" 
-              onChange={(e) =>{setDataInput(e.target.value)}}
-            />
-          </div>
+ 
         <Card>
           <CardHeader color="warning" style={{ marginBottom: -30 }}>
             <h4 className={classes.cardTitleWhite}>Result</h4>

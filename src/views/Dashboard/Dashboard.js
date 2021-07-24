@@ -316,7 +316,7 @@ export default function Dashboard() {
 
         <GridItem xs={12} sm={12} md={11}>
           <Card>
-            <CardHeader color="danger">
+            <CardHeader color="rose">
               <h4 className={classes.cardTitleWhite}>Latest Result</h4>
               
             </CardHeader>

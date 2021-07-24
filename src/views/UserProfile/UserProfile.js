@@ -86,7 +86,7 @@ export default function UserProfile() {
                     formControlProps={{
                       fullWidth: true
                     }}
-                    value = {student?student[0].idFaculty:""}
+                    value = {student?student[0].description:""}
                     inputProps={{
                       disabled: true
                     }}
@@ -180,7 +180,8 @@ export default function UserProfile() {
           <Card profile>
             <CardAvatar profile>
               <a href="#pablo" onClick={e => e.preventDefault()}>
-                <img src={student?student[0].image:""} alt="..." />
+              <img src={`data:image/jpeg;base64,${student?student[0].image:""}`} alt="..." style={{height: 275 , width: 275}}/>
+                {/* <img src= alt="..." /> */}
               </a>
             </CardAvatar>
             <CardBody profile>

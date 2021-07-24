@@ -51,8 +51,7 @@ const SeeMore = () => {
                 "Age",
                 "Sex",
                 "Address",
-                "Falcuty",
-                "Role",
+                "Faculty"
                 
                 
               ]}

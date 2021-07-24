@@ -65,6 +65,7 @@ const SeeMore = () => {
               <Input
                     style={{width: "100%"}}
                     type="number" 
+                    placeholder="Enter student ID"
                     onChange={(event) => {setDataInput(event.target.value);}}
                   />
                 
