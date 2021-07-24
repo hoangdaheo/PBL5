@@ -4,7 +4,7 @@ const header = {
   Authorization: "",
 };
 
-var IP = "http://localhost:8008/";
+var IP = "https://project-pbl5.herokuapp.com/";
 function APIGet(url) {
   url = IP + url;
   return fetch(url).then((response) => response.json());
